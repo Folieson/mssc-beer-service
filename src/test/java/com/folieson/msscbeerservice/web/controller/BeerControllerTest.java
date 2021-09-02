@@ -26,6 +26,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,8 +52,20 @@ class BeerControllerTest {
     given(beerRepository.findById(any())).willReturn(Optional.of(Beer.builder().build()));
     mockMvc.perform(get(URL + "{beerId}", UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andDo(document("v1/beer", pathParameters(
-            parameterWithName("beerId").description("UUID of described beer to get.")
+        .andDo(document("v1/beer",
+            pathParameters(
+                parameterWithName("beerId").description("UUID of described beer to get.")
+            ),
+            responseFields(
+                fieldWithPath("id").description("Id of Beer"),
+                fieldWithPath("version").description("Version number"),
+                fieldWithPath("createdDate").description("Date Created"),
+                fieldWithPath("lastModifiedDate").description("Date Updated"),
+                fieldWithPath("beerName").description("Beer Name"),
+                fieldWithPath("beerStyle").description("Beer Style"),
+                fieldWithPath("upc").description("UPC of Beer"),
+                fieldWithPath("price").description("Price"),
+                fieldWithPath("quantityOnHand").description("Quantity On hand")
         )));
   }
 
