@@ -22,9 +22,12 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -45,8 +48,11 @@ class BeerControllerTest {
   @Test
   void getBeerById() throws Exception {
     given(beerRepository.findById(any())).willReturn(Optional.of(Beer.builder().build()));
-    mockMvc.perform(get(URL + UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+    mockMvc.perform(get(URL + "{beerId}", UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andDo(document("v1/beer", pathParameters(
+            parameterWithName("beerId").description("UUID of described beer to get.")
+        )));
   }
 
   @Test
