@@ -57,7 +57,7 @@ class BeerControllerTest {
     given(beerRepository.findById(any())).willReturn(Optional.of(Beer.builder().build()));
     mockMvc.perform(get(URL + "{beerId}", UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andDo(document("v1/beer",
+        .andDo(document("v1/beer-get",
             pathParameters(
                 parameterWithName("beerId").description("UUID of described beer to get.")
             ),
@@ -83,16 +83,16 @@ class BeerControllerTest {
 
     mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(beerDtoJson))
         .andExpect(status().isCreated())
-        .andDo(document("v1/beer",
+        .andDo(document("v1/beer-new",
             requestFields(
                 fields.withPath("id").ignored(),
                 fields.withPath("version").ignored(),
                 fields.withPath("createdDate").ignored(),
                 fields.withPath("lastModifiedDate").ignored(),
-                fields.withPath("beerName").description("Beer Name"),
-                fields.withPath("beerStyle").description("Beer Style"),
-                fields.withPath("upc").description("UPC of Beer"),
-                fields.withPath("price").description("Price"),
+                fields.withPath("beerName").description("Name of the beer"),
+                fields.withPath("beerStyle").description("Style of beer"),
+                fields.withPath("upc").description("Beer UPC"),
+                fields.withPath("price").description("Beer price"),
                 fields.withPath("quantityOnHand").ignored()
             )));
   }
