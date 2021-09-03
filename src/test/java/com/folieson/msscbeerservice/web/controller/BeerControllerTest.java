@@ -27,6 +27,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -75,7 +76,19 @@ class BeerControllerTest {
     String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
     mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(beerDtoJson))
-        .andExpect(status().isCreated());
+        .andExpect(status().isCreated())
+        .andDo(document("v1/beer",
+            requestFields(
+                fieldWithPath("id").ignored(),
+                fieldWithPath("version").ignored(),
+                fieldWithPath("createdDate").ignored(),
+                fieldWithPath("lastModifiedDate").ignored(),
+                fieldWithPath("beerName").description("Beer Name"),
+                fieldWithPath("beerStyle").description("Beer Style"),
+                fieldWithPath("upc").description("UPC of Beer"),
+                fieldWithPath("price").description("Price"),
+                fieldWithPath("quantityOnHand").ignored()
+            )));
   }
 
   @Test
