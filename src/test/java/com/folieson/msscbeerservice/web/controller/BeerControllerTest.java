@@ -3,6 +3,7 @@ package com.folieson.msscbeerservice.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.folieson.msscbeerservice.domain.Beer;
 import com.folieson.msscbeerservice.repositories.BeerRepository;
+import com.folieson.msscbeerservice.services.BeerService;
 import com.folieson.msscbeerservice.web.model.BeerDto;
 import com.folieson.msscbeerservice.web.model.BeerStyle;
 import org.junit.jupiter.api.Test;
@@ -50,11 +51,11 @@ class BeerControllerTest {
   @Autowired
   private ObjectMapper objectMapper;
   @MockBean
-  private BeerRepository beerRepository;
+  private BeerService beerService;
 
   @Test
   void getBeerById() throws Exception {
-    given(beerRepository.findById(any())).willReturn(Optional.of(Beer.builder().build()));
+    given(beerService.getById(any())).willReturn(BeerDto.builder().build());
     mockMvc.perform(get(URL + "{beerId}", UUID.randomUUID()).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andDo(document("v1/beer-get",
