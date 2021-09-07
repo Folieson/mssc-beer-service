@@ -1,7 +1,6 @@
 package com.folieson.msscbeerservice.web.controller;
 
-import com.folieson.msscbeerservice.repositories.BeerRepository;
-import com.folieson.msscbeerservice.web.mappers.BeerMapper;
+import com.folieson.msscbeerservice.services.BeerService;
 import com.folieson.msscbeerservice.web.model.BeerDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,33 +20,20 @@ import java.util.UUID;
 @RequestMapping("/api/v1/beer")
 @RestController
 public class BeerController {
-  private final BeerMapper beerMapper;
-  private final BeerRepository beerRepository;
+  private final BeerService beerService;
 
   @GetMapping("/{beerId}")
   public ResponseEntity<BeerDto> getBeerById(@PathVariable("beerId") UUID beerId) {
-    return beerRepository.findById(beerId)
-        .map(beer -> ResponseEntity.status(HttpStatus.OK).body(beerMapper.beerToBeerDto(beer)))
-        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    return ResponseEntity.status(HttpStatus.OK).body(beerService.getById(beerId));
   }
 
   @PostMapping
-  public ResponseEntity<String> saveNewBeer(@Validated @RequestBody BeerDto beerDto) {
-    beerRepository.save(beerMapper.beerDtoToBeer(beerDto));
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+  public ResponseEntity<BeerDto> saveNewBeer(@Validated @RequestBody BeerDto beerDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(beerService.saveNewBeer(beerDto));
   }
 
   @PutMapping("/{beerId}")
-  public ResponseEntity<String> updateBeerById(@PathVariable("beerId") UUID beerId, @Validated @RequestBody BeerDto beerDto) {
-    beerRepository.findById(beerId).ifPresent(beer -> {
-      beer.setBeerName(beerDto.getBeerName());
-      beer.setBeerStyle(beerDto.getBeerStyle().name());
-      beer.setPrice(beerDto.getPrice());
-      beer.setUpc(beerDto.getUpc());
-
-      beerRepository.save(beer);
-    });
-
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  public ResponseEntity<BeerDto> updateBeerById(@PathVariable("beerId") UUID beerId, @Validated @RequestBody BeerDto beerDto) {
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(beerService.updateBeer(beerId, beerDto));
   }
 }
