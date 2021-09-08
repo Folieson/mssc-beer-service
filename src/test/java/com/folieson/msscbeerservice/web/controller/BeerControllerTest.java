@@ -1,8 +1,6 @@
 package com.folieson.msscbeerservice.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.folieson.msscbeerservice.domain.Beer;
-import com.folieson.msscbeerservice.repositories.BeerRepository;
 import com.folieson.msscbeerservice.services.BeerService;
 import com.folieson.msscbeerservice.web.model.BeerDto;
 import com.folieson.msscbeerservice.web.model.BeerStyle;
@@ -21,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -114,7 +111,7 @@ class BeerControllerTest {
         .beerName("My Beer")
         .beerStyle(BeerStyle.ALE)
         .price(new BigDecimal("2.99"))
-        .upc(123123123123L)
+        .upc("123123123123")
         .build();
   }
 
